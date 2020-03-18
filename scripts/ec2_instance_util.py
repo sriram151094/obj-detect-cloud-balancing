@@ -1,5 +1,5 @@
 # ami-0903fd482d7208724
-import urllib.request
+import urllib3
 from connection_util import get_ec2_resource
 
 
@@ -14,8 +14,8 @@ def generate_ec2_pair():
 def create_ec2_instances(num_of_instances, ec2_resource):
     if num_of_instances > 0:
         # ec2 = get_ec2_resource()
-        instance = ec2_resource.create_instances(
-            ImageId='ami-09cf8d89f433fc8b1',
+        instances = ec2_resource.create_instances(
+            ImageId='ami-001aaa7b482ada63a',
             Monitoring={
                 'Enabled': True
             },
@@ -30,6 +30,8 @@ def create_ec2_instances(num_of_instances, ec2_resource):
             KeyName="cloud_project1",
             InstanceType="t2.micro"
         )
+        for instance in instances:
+            instance.wait_until_running()
         return instance
 
 
@@ -57,15 +59,18 @@ def start_instances(instances, ec2_client):
         InstanceIds=InstanceIDs)
 
 
-def stop_instance(ec2_client):
-    instance_id = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read().decode()
-    response = ec2_client.stop_instances(
-        InstanceIds=[
-            instance_id,
-        ]
-    )
+# def stop_instance(ec2_client):
+#     instance_id = urllib3.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read().decode()
+#     response = ec2_client.stop_instances(
+#         InstanceIds=[
+#             instance_id,
+#         ]
+#     )
 
 
 if __name__ == '__main__':
     # generate_ec2_pair()
+    # x = get_running_ec2_instances(get_ec2_resource())
+    # y = sum(1 for _ in x)
+    # print(y)
     create_ec2_instances(1, get_ec2_resource())

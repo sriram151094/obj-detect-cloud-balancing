@@ -2,10 +2,9 @@
 # coding: utf-8
 
 import random
-from s3_file_uploader import get_sqs_client
+from connection_util import get_sqs_client, get_ec2_client
 from sqs_queue import get_queue_length
-from ec2_instance_util import get_ec2_client, create_ec2_instances, get_running_ec2_instances, \
-    get_ec2_resource, start_instances, get_idle_instances
+from ec2_instance_util import create_ec2_instances, get_running_ec2_instances, get_ec2_resource, start_instances, get_idle_instances
 
 video_path = '/home/pi/recorded_videos'
 # video_path = './Videos/'
@@ -18,8 +17,7 @@ def run_object_detection_in_ec2():
     msg_queue = get_sqs_client()
     resource = get_ec2_resource()
     while 1:
-        queue_attr = get_queue_length(msg_queue)
-        queue_len = int(queue_attr['Attributes']['ApproximateNumberOfMessages'])
+        queue_len = get_queue_length(msg_queue)
         while queue_len > 0:
             # all_instances = get_all_ec2_instances(resource)
             active_instances = get_running_ec2_instances(resource)
