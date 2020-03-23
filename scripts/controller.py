@@ -14,6 +14,7 @@ MAX_NO_OF_INSTANCES = 6
 
 
 def run_object_detection_in_ec2():
+    idle_ids = []
     msg_queue = get_sqs_client()
     resource = get_ec2_resource()
     while 1:
@@ -27,14 +28,17 @@ def run_object_detection_in_ec2():
             num_active_inst = sum(1 for _ in active_instances)
             idle_num = sum(1 for _ in idle_instances)
 
+            for ins in idle_instances:
+                idle_ids.append(ins.id)
+
             if queue_len > MAX_NO_OF_INSTANCES:
                 create_ec2_instances(MAX_NO_OF_INSTANCES - num_active_inst - idle_num, resource)
-                start_idle_instances(idle_instances, idle_num)
+                start_idle_instances(idle_ids, idle_num)
             elif queue_len <= idle_num:
-                start_idle_instances(idle_instances, queue_len)
+                start_idle_instances(idle_ids, queue_len)
             elif queue_len > idle_num:
                 create_ec2_instances(queue_len - idle_num, resource)
-                start_idle_instances(idle_instances, idle_num)
+                start_idle_instances(idle_ids, idle_num)
 
 
 def start_idle_instances(idle_ids, no_of_instances):
