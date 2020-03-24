@@ -27,7 +27,8 @@ while True:
             download_file_from_s3(bucket, filename, '/home/' + username + '/videos/downloaded_videos')
 
             # Call shell script to run darknet detector
-            subprocess.call(['./detector.sh'])
+            #subprocess.call(['echo "/home/pi/scripts/detector.sh >> /home/pi/log.txt"'])
+            subprocess.call(['/home/pi/scripts/detector.sh'])
 
             # Next, we delete the message from the queue so no one else will process it again
             client.delete_message(QueueUrl=queue_url, ReceiptHandle=message['ReceiptHandle'])
