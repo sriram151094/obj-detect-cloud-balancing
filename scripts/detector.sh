@@ -19,7 +19,7 @@ do
                 echo "Darknet command running"
                 pwd
 		./darknet detector demo cfg/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights $fname >> /home/${user}/output_${proccessed}.txt
-                mv $fname /home/${user}/videos/processed
+                mv $fname /home/${user}/videos/downloaded_videos/processed
                 rm -rf $fname
                 python /home/${user}/scripts/output_generator.py /home/${user}/output_${proccessed}.txt ${proccessed}
                 python /home/${user}/scripts/file_upload.py /home/${user} out_${proccessed}.txt
