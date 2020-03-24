@@ -6,7 +6,7 @@ user=$(whoami)
 cd /home/${user}/darknet
 Xvfb :1 & export DISPLAY=:1
 pwd
-direct="/home/${user}/videos/*"
+direct="/home/${user}/videos/downloaded_videos/*"
 mkdir -p /home/${user}/processed
 for fname in $direct
 do

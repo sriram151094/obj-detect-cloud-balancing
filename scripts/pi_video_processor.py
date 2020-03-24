@@ -24,7 +24,7 @@ while True:
             bucket = json.loads(message['Body'])['bucketId']
             filename = json.loads(message['Body'])['fileName']
             username = getpass.getuser()
-            download_file_from_s3(bucket, filename, '/home/' + username + '/videos')
+            download_file_from_s3(bucket, filename, '/home/' + username + '/videos/downloaded_videos')
 
             # Call shell script to run darknet detector
             subprocess.call(['./detector.sh'])

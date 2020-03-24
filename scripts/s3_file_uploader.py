@@ -7,7 +7,7 @@ from sqs_queue import send_msg
 from connection_util import get_s3_client, get_sqs_client
 
 
-video_path = '/home/pi/recorded_videos'
+video_path = '/home/pi/videos'
 #video_path = '../Videos/'
 bucketname = 'videodatainputbucket'
 
@@ -29,27 +29,28 @@ def upload_file_to_s3(path, bucket_name, file_name):
 
 
 def process_videos():
-    # Get files from the folder to upload to S3
-    files = os.listdir(video_path)
-    regex = re.compile(r'.*\.h264')
-    files_to_upload = list(filter(regex.search, files))
-    print(files_to_upload)
-    sqs = get_sqs_client()
-    if len(files_to_upload) == 0:
-        print("No files to upload")
-    else:
-        for file in files_to_upload:
-            try:
-                response = upload_file_to_s3(video_path + '/' + file, bucketname, file)
-                print(response)
-                # Move the video to the processed folder
-                move_video(file)
+    while 1:
+        # Get files from the folder to upload to S3
+        files = os.listdir(video_path)
+        regex = re.compile(r'.*\.h264')
+        files_to_upload = list(filter(regex.search, files))
+        print(files_to_upload)
+        sqs = get_sqs_client()
+        if len(files_to_upload) == 0:
+            print("No files to upload")
+        else:
+            for file in files_to_upload:
+                try:
+                    response = upload_file_to_s3(video_path + '/' + file, bucketname, file)
+                    print(response)
+                    # Move the video to the processed folder
+                    move_video(file)
 
-                # Send message to SQS queue
-                send_msg(sqs, file, bucketname)
+                    # Send message to SQS queue
+                    send_msg(sqs, file, bucketname)
 
-            except ClientError as e:
-                print("Error uploading file")
+                except ClientError as e:
+                    print("Error uploading file")
 
 
 if __name__ == '__main__':
