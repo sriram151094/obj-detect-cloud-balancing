@@ -1,6 +1,6 @@
 # Real time object detection from videos of recorded by rasperberry-pi cam
 
-The folder scripts contain python programs that run on both raspberry-pi and AWS controller instance. 
+The folder scripts contains the python programs needed for both raspberry-pi and AWS controller instance. 
 
 Separate utility python modules are created for connecting to and interacting with various AWS services like S3, SQS and EC2 instances. 
 
